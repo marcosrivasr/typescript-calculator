@@ -27,7 +27,7 @@ class Calculator{
         let result:number   = 0;
         let items: string[] = this.normalize(this._input.split(''));
         console.log('items', items);
-        console.log('posfix',this.toPosfix(items));
+        console.log('posfix',this.toPostfix(items));
 
         return result;
     }
@@ -45,7 +45,7 @@ class Calculator{
         http://btechsmartclass.com/data_structures/infix-to-postfix.html
     */
 
-    private toPosfix(list:string[]): string[]{
+    private toPostfix(list:string[]): string[]{
         let output:string[] = [];
         let stack:string[] = [];
 
@@ -107,6 +107,12 @@ class Calculator{
             case '/':
                 return 3;
             break;
+            case '^':
+                return 4;
+            break;
+            case '%':
+                return 5;
+            break;
             default:
                 return 0;
         }
@@ -117,7 +123,7 @@ class Calculator{
     }
 
     private isOperator(item:string):boolean{
-        if(item === '+' || item === '-' || item === '*' || item === '/') return true;
+        if(item === '+' || item === '-' || item === '*' || item === '/' || item === '^' || item === '%') return true;
 
         return false;
     }
@@ -147,9 +153,9 @@ class Calculator{
                 digit = true;
                 number = Number(item) * multiplier;
                 multiplier *= 10;
-                //console.log('   = number:', number);
 
-            }else if(item === '+' || item === '-' || item === '*' || item === '/' || item === '(' || item === ')'){
+            }else if(item === '+' || item === '-' || item === '*' || item === '/' || 
+                    item === '(' || item === ')' || item === '^' || item === '%'){
                 //console.log('   = es una operacion');
                 if(digit){
                     //console.log('   = primero guardo el número ', number);
@@ -165,6 +171,14 @@ class Calculator{
                     res.unshift(item);
                 }
             }
+        }
+
+        if(digit){
+            //console.log('   = falta de agregar el ', number);
+            res.unshift(String(number));
+            digit = false;
+            number = 0;
+            multiplier = 1;
         }
         return res;
     }
