@@ -23,13 +23,55 @@ class Calculator{
         
         if (this._input === null) throw new Error('Not value provided');
 
-        
-        let result:number   = 0;
-        let items: string[] = this.normalize(this._input.split(''));
-        console.log('items', items);
-        console.log('posfix',this.toPostfix(items));
+        let stack:number[]   = [];
+        let items: string[]  = this.normalize(this._input.split(''));
+        let postfix:string[] = this.toPostfix(items);
+        console.log(postfix);
 
-        return result;
+        while(postfix.length > 0){
+            const item:string = <string>postfix.shift();
+            console.log(item);
+            if(this.isNumber(item)){
+                
+                stack.push(Number(item));
+                console.log('   = es un numero, se añade al stack', stack);
+            }else if(this.isOperator(item)){
+                console.log('   = es un operador, saco numeros del stack');
+                const n1:number = <number>stack.pop();
+                const n2:number = <number>stack.pop();
+                const op:string = item;
+                const partial = this.getPartial(n1,n2,op);
+                stack.push(partial);
+                console.log(`   = el resultado de ${n1} ${op} ${n2} es ${partial}`);
+                console.log('   = se añade al stack', stack);  
+            }
+        }
+        return <number>stack.pop();
+    }
+
+    private getPartial(n1:number, n2:number, op:string):number{
+        switch(op){
+            case '+':
+                return n1 + n2;
+                break;
+            case '-':
+                return n1 - n2;
+                break;
+            case '*':
+                return n1 * n2;
+                break;
+            case '/':
+                return n1 / n2;
+                break;
+            case '^':
+                return n1 ^ n2;
+                break;
+            case '%':
+                return n1 % n2;
+                break;
+            default:
+                throw new Error(`Symbol '${op}' not recognized`);
+        }
     }
 
     /*
@@ -82,7 +124,7 @@ class Calculator{
                     
                 }
             }else{
-                throw new Error(`Symbol '${item}' not identified`);
+                throw new Error(`Symbol '${item}' not recognized`);
             }
         }
 
@@ -114,7 +156,7 @@ class Calculator{
                 return 5;
             break;
             default:
-                return 0;
+                throw new Error(`Symbol '${item}' not recognized`);
         }
     }
 
@@ -127,10 +169,6 @@ class Calculator{
 
         return false;
     }
-
-    
-
-
 
     private isNumber(value:string):boolean{
         return !isNaN(Number(value));
@@ -146,35 +184,37 @@ class Calculator{
         while(items.length > 0){
             item = items.pop() as string;
             
-            console.log(item);
+            //console.log(item);
 
             if(this.isNumber(item)){
-                console.log('   = es numero');
+                //console.log('   = es numero');
                 digit = true;
                 number = Number(item) * multiplier;
                 multiplier *= 10;
 
             }else if(item === '+' || item === '-' || item === '*' || item === '/' || 
                     item === '(' || item === ')' || item === '^' || item === '%'){
-                console.log('   = es una operacion');
+                //console.log('   = es una operacion');
                 if(digit){
-                    console.log('   = primero guardo el número ', number);
+                    //console.log('   = primero guardo el número ', number);
                     res.unshift(String(number));
                     digit = false;
                     number = 0;
                     multiplier = 1;
-                    console.log('   = ahora añado el operador ', item);
+                    //console.log('   = ahora añado el operador ', item);
                     res.unshift(item);
-                    console.log('res: ', res);
+                    //console.log('res: ', res);
                 }else{
-                    console.log('   = no hay número guardado, se añade el operador ', item);
+                    //console.log('   = no hay número guardado, se añade el operador ', item);
                     res.unshift(item);
                 }
+            }else{
+                throw new Error(`Symbol '${item}' not recognized`);
             }
         }
 
         if(digit){
-            console.log('   = falta de agregar ', number);
+            //console.log('   = falta de agregar ', number);
             res.unshift(String(number));
             digit = false;
             number = 0;
