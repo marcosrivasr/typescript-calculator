@@ -146,35 +146,35 @@ class Calculator{
         while(items.length > 0){
             item = items.pop() as string;
             
-            //console.log(item);
+            console.log(item);
 
             if(this.isNumber(item)){
-                //console.log('   = es numero');
+                console.log('   = es numero');
                 digit = true;
                 number = Number(item) * multiplier;
                 multiplier *= 10;
 
             }else if(item === '+' || item === '-' || item === '*' || item === '/' || 
                     item === '(' || item === ')' || item === '^' || item === '%'){
-                //console.log('   = es una operacion');
+                console.log('   = es una operacion');
                 if(digit){
-                    //console.log('   = primero guardo el número ', number);
+                    console.log('   = primero guardo el número ', number);
                     res.unshift(String(number));
                     digit = false;
                     number = 0;
                     multiplier = 1;
-                    //console.log('   = ahora añado el operador ', item);
+                    console.log('   = ahora añado el operador ', item);
                     res.unshift(item);
-                    //console.log('res: ', res);
+                    console.log('res: ', res);
                 }else{
-                    //console.log('   = no hay número guardado, se añade el operador ', item);
+                    console.log('   = no hay número guardado, se añade el operador ', item);
                     res.unshift(item);
                 }
             }
         }
 
         if(digit){
-            //console.log('   = falta de agregar el ', number);
+            console.log('   = falta de agregar ', number);
             res.unshift(String(number));
             digit = false;
             number = 0;
